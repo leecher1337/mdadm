@@ -1,0 +1,47 @@
+#!/usr/bin/make -f
+# Copyright © 2001-2005 Mario Jou/3en <joussen@debian.org>
+# Copyright © 2005-2008 Martin F. Krafft <madduck@debian.org>
+# Copyright © 2021 Felix Lechner <felix.lechner@lease-up.com>
+# Distributable under the terms of the GNU GPL version 2.
+#
+
+#export DH_VERBOSE=1
+
+export CROSS_COMPILE=$(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)-
+export LDFLAGS = $(shell DEB_BUILD_MAINT_OPTIONS=hardening=+all dpkg-buildflags --get LDFLAGS)
+export CXFLAGS = $(shell DEB_BUILD_MAINT_OPTIONS=hardening=+all dpkg-buildflags --get CFLAGS) \
+	  $(shell DEB_BUILD_MAINT_OPTIONS=hardening=+all dpkg-buildflags --get CPPFLAGS)
+
+export DEBIAN="yes"
+
+# these are reversed in the Makefile
+export CONFFILE="/etc/mdadm/mdadm.conf"
+export CONFFILE2="/etc/mdadm.conf"
+
+%:
+	dh $@
+
+override_dh_install:
+	$(MAKE) install-systemd DESTDIR=$(CURDIR)/debian/tmp
+	dh_install
+
+	chmod +x $(CURDIR)/debian/mdadm/usr/share/mdadm/mdcheck
+
+ifeq ($(shell dpkg-vendor --derives-from Ubuntu && echo yes), yes)
+	dh_install --package=mdadm-udeb lib/udev/rules.d/64-md-raid-assembly.rules
+	dh_install --package=mdadm debian/source_mdadm.py usr/share/apport/package-hooks/
+endif
+
+override_dh_installsystemd:
+	dh_installsystemd --name mdadm-shutdown
+
+override_dh_installinit:
+	dh_installinit --init-script=mdadm-waitidle --no-start -- stop 98 0 6 .
+	dh_installinit -- defaults 25
+
+override_dh_gencontrol:
+ifeq ($(shell dpkg-vendor --derives-from Ubuntu && echo yes), yes)
+	dh_gencontrol -- -Vmta:Suggests="default-mta | mail-transport-agent"
+else
+	dh_gencontrol -- -Vmta:Recommends="default-mta | mail-transport-agent"
+endif

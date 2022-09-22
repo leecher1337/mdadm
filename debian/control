@@ -1,0 +1,49 @@
+Source: mdadm
+Section: admin
+Priority: optional
+Maintainer: Felix Lechner <felix.lechner@lease-up.com>
+Build-Depends:
+ debhelper-compat (= 13),
+ libudev-dev,
+ groff-base,
+ po-debconf
+Standards-Version: 4.5.1
+Rules-Requires-Root: no
+Vcs-Git: https://salsa.debian.org/lechner/mdadm.git -b debian/master
+Vcs-Browser: https://salsa.debian.org/lechner/mdadm
+Homepage: http://neil.brown.name/blog/mdadm
+
+Package: mdadm
+Architecture: linux-any
+Pre-Depends:
+ ${misc:Pre-Depends}
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+ debconf,
+ lsb-base,
+ udev
+Recommends:
+ ${mta:Recommends},
+ kmod | module-init-tools
+Suggests:
+ ${mta:Suggests},
+ dracut-core
+Description: Tool to administer Linux MD arrays (software RAID)
+ The mdadm utility can be used to create, manage, and monitor MD
+ (multi-disk) arrays for software RAID or multipath I/O.
+ .
+ This package automatically configures mdadm to assemble arrays during the
+ system startup process. If not needed, this functionality can be disabled.
+
+Package: mdadm-udeb
+Section: debian-installer
+Package-Type: udeb
+Architecture: linux-any
+Depends:
+ ${shlibs:Depends}
+Description: Tool to administer Linux MD arrays (software RAID)
+ The mdadm utility can be used to create, manage, and monitor MD
+ (multi-disk) arrays for software RAID or multipath I/O.
+ .
+ This is a minimal package used by the debian-installer.

@@ -1,0 +1,17 @@
+Description: add sunway support
+Author: Miao Changwei <miaochangwei@uniontech.com>
+
+---
+Last-Update: 2022-05-06
+
+--- mdadm-4.2~rc2.orig/util.c
++++ mdadm-4.2~rc2/util.c
+@@ -794,7 +794,7 @@ unsigned long calc_csum(void *super, int
+ 	for(i = 0; i < bytes/4; i++)
+ 		newcsum += superc[i];
+ 	csum = (newcsum& 0xffffffff) + (newcsum>>32);
+-#ifdef __alpha__
++#if defined(__alpha__) || defined(__sw_64__)
+ /* The in-kernel checksum calculation is always 16bit on
+  * the alpha, though it is 32 bit on i386...
+  * I wonder what it is elsewhere... (it uses an API in

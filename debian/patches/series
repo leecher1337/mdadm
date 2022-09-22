@@ -1,0 +1,12 @@
+debian-conffile-location.diff
+debian-no-Werror.diff
+sha1-includes.diff
+readlink-path.patch
+mdmonitor-service-simplify.diff
+fix-manpages.patch
+documentation-keys-in-service-files.patch
+fix-command-line-help.patch
+strcat-look-for-md-device-in-dev-md.patch
+exit-gracefully-when-md-device-not-found.patch
+test-installed.patch
+add-sunway-support.patch

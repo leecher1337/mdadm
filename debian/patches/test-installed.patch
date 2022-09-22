@@ -1,0 +1,32 @@
+Description: Test installed files
+ The test suite seems to check the executable bit on the local build product
+ 'mdadm' but runs all programs from the system PATH. This change should test
+ the installed version.
+ .
+ I believe this change tests the installed version, but that hypothesis is not
+ supported by much else. The autopkgtest restriction isolation-machine made it
+ difficult so far to run the test suite anywhere.
+ .
+ The entire setup is untested and may require further modification in order to
+ function.
+ .
+ Incorporates a suggestion from the fdisk maintainer to specify the fdisk
+ prerequisite explicitly.
+Author: Felix Lechner <felix.lechner@lease-up.com>
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=872118
+Forwarded: not-needed
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/tests/func.sh
++++ b/tests/func.sh
+@@ -101,10 +101,6 @@ check_env() {
+ 		echo "test: testing can only be done as 'root'."
+ 		exit 1
+ 	}
+-	[ \! -x $mdadm ] && {
+-		echo "test: please run make everything before perform testing."
+-		exit 1
+-	}
+ 	cmds=(mdadm lsblk df udevadm losetup mkfs.ext3 fsck seq)
+ 	for cmd in ${cmds[@]}
+ 	do

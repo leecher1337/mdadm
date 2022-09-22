@@ -1,0 +1,7 @@
+Archive: kernel.org
+Repository: "https://git.kernel.org/pub/scm/utils/mdadm/mdadm.git/"
+Repository-Browse: "https://git.kernel.org/pub/scm/utils/mdadm/mdadm.git/"
+Bug-Submit: "http://vger.kernel.org/vger-lists.html#linux-raid"
+Bug-Database: "https://marc.info/?l=linux-raid"
+Documentation: "https://raid.wiki.kernel.org/index.php/Linux_Raid"
+Other-References: "https://mirrors.edge.kernel.org/pub/linux/utils/raid/mdadm/"

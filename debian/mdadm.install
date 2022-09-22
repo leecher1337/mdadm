@@ -1,0 +1,9 @@
+sbin/
+lib/
+
+misc/mdcheck usr/share/mdadm/
+
+debian/mkconf usr/share/mdadm/
+debian/checkarray usr/share/mdadm/
+debian/initramfs/* usr/share/initramfs-tools/
+debian/bug-submission/script usr/share/bug/mdadm/

@@ -1,0 +1,18 @@
+Description: Make command-line help consistent with manual page.
+ Mode was missing.
+Author: Felix Lechner <felix.lechner@lease-up.com>
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=932791
+Forwarded: no
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/ReadMe.c
++++ b/ReadMe.c
+@@ -477,7 +477,7 @@ char Help_assemble[] =
+ ;
+ 
+ char Help_manage[] =
+-"Usage: mdadm arraydevice options component devices...\n"
++"Usage: mdadm [mode] arraydevice [options] <component devices...>\n"
+ "\n"
+ "This usage is for managing the component devices within an array.\n"
+ "The --manage option is not needed and is assumed if the first argument\n"

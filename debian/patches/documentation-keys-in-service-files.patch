@@ -1,0 +1,77 @@
+Description: Make adjustments to systemd files provided by upstream
+Author: Felix Lechner <felix.lechner@lease-up.com>
+Forwarded: no
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/systemd/mdcheck_continue.service
++++ b/systemd/mdcheck_continue.service
+@@ -7,7 +7,8 @@
+ 
+ [Unit]
+ Description=MD array scrubbing - continuation
+-ConditionPathExistsGlob = /var/lib/mdcheck/MD_UUID_*
++ConditionPathExistsGlob=/var/lib/mdcheck/MD_UUID_*
++Documentation=man:mdadm(8)
+ 
+ [Service]
+ Type=oneshot
+--- a/systemd/mdcheck_start.service
++++ b/systemd/mdcheck_start.service
+@@ -8,6 +8,7 @@
+ [Unit]
+ Description=MD array scrubbing
+ Wants=mdcheck_continue.timer
++Documentation=man:mdadm(8)
+ 
+ [Service]
+ Type=oneshot
+--- a/systemd/mdmonitor-oneshot.service
++++ b/systemd/mdmonitor-oneshot.service
+@@ -7,6 +7,7 @@
+ 
+ [Unit]
+ Description=Reminder for degraded MD arrays
++Documentation=man:mdadm(8)
+ 
+ [Service]
+ Environment=MDADM_MONITOR_ARGS=--scan
+--- a/systemd/mdadm-grow-continue@.service
++++ b/systemd/mdadm-grow-continue@.service
+@@ -8,6 +8,7 @@
+ [Unit]
+ Description=Manage MD Reshape on /dev/%I
+ DefaultDependencies=no
++Documentation=man:mdadm(8)
+ 
+ [Service]
+ ExecStart=BINDIR/mdadm --grow --continue /dev/%I
+--- a/systemd/mdadm-last-resort@.service
++++ b/systemd/mdadm-last-resort@.service
+@@ -2,6 +2,7 @@
+ Description=Activate md array %I even though degraded
+ DefaultDependencies=no
+ ConditionPathExists=!/sys/devices/virtual/block/%i/md/sync_action
++Documentation=man:mdadm(8)
+ 
+ [Service]
+ Type=oneshot
+--- a/systemd/mdmon@.service
++++ b/systemd/mdmon@.service
+@@ -9,6 +9,7 @@
+ Description=MD Metadata Monitor on /dev/%I
+ DefaultDependencies=no
+ Before=initrd-switch-root.target
++Documentation=man:mdmon(8)
+ 
+ [Service]
+ # mdmon should never complain due to lack of a platform,
+--- a/systemd/mdmonitor.service
++++ b/systemd/mdmonitor.service
+@@ -8,6 +8,7 @@
+ [Unit]
+ Description=MD array monitor
+ DefaultDependencies=no
++Documentation=man:mdadm(8)
+ 
+ [Service]
+ ExecStart=BINDIR/mdadm --monitor --scan

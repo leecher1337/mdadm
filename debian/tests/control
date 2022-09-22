@@ -1,0 +1,6 @@
+Tests: test-installed
+Restrictions: needs-root, isolation-machine
+Depends:
+ fdisk | util-linux (<< 2.29.2-3~),
+ mdadm,
+ udev
