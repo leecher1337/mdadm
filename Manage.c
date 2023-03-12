@@ -1765,3 +1765,58 @@ int move_spare(char *from_devname, char *to_devname, dev_t devid)
 	close(fd2);
 	return 0;
 }
+
+#ifdef MD_DISK_ERROR
+int Manage_updateSB(char *dev, struct supertype *st, char *update, int verbose, int noexcl)
+{
+	/*
+	 * Update the raid superblock on a device.
+	 * Returns:
+	 *  0 - the superblock was successfully updated
+	 *  1 - failed to write the superblock
+	 *  2 - failed to open the device.
+	 *  4 - failed to find a superblock.
+	 */
+
+	int fd, rv = 0;
+
+	fd = open(dev, O_RDWR|(noexcl ? 0 : O_EXCL));
+	if (fd < 0) {
+		if (verbose >= 0)
+			pr_err("Couldn't open %s for write - not updating\n",
+				dev);
+		return 2;
+	}
+	if (st == NULL)
+		st = guess_super(fd);
+	if (st == NULL) {
+		if (verbose >= 0)
+			pr_err("Unrecognised md component device - %s\n", dev);
+		close(fd);
+		return 4;
+	}
+	st->ignore_hw_compat = 1;
+	rv = st->ss->load_super(st, fd, dev);
+	if (rv == 0) {
+		if (st->ss->update_super(st, NULL, update, dev, 0, 0, NULL)) {
+			if (verbose >= 0)
+				pr_err("Cannot update superblock option %s on %s.\n", update, dev);
+			rv = 1;
+		} else {
+			// Hack to tell store_super0 to obey host endianness:
+			if (st->ss == &super0 && st->minor_version == 9) st->minor_version = -9;
+			if (st->ss->store_super(st, fd)) {
+				if (verbose >= 0)
+					pr_err("Could not write superblock on %s\n",
+						dev);
+				rv = 1;
+			}
+			// ..and reset back hacked version
+			if (st->ss == &super0 && st->minor_version == -9) st->minor_version = 9;
+		}
+		st->ss->free_super(st);
+	}
+	close(fd);
+	return rv;
+}
+#endif

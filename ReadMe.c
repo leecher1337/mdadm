@@ -181,6 +181,9 @@ struct option long_options[] = {
     {"wait-clean", 0, 0, Waitclean },
     {"action",    1, 0, Action },
     {"cluster-confirm", 0, 0, ClusterConfirm},
+#ifdef MD_DISK_ERROR
+    {"no-diskerr",0, 0, NoDiskErr },
+#endif
 
     /* For Detail/Examine */
     {"brief",	  0, 0, Brief},
@@ -523,6 +526,9 @@ char Help_misc[] =
 "  --stop        -S   : deactivate array, releasing all resources\n"
 "  --readonly    -o   : mark array as readonly\n"
 "  --readwrite   -w   : mark array as readwrite\n"
+#ifdef MD_DISK_ERROR
+"  --no-diskerr       : Clear Synology Disk Error flag on array component\n"
+#endif
 "  --test        -t   : exit status 0 if ok, 1 if degrade, 2 if dead, 4 if missing\n"
 "  --wait        -W   : wait for resync/rebuild/recovery to finish\n"
 "  --action=          : initiate or abort ('idle' or 'frozen') a 'check' or 'repair'.\n"

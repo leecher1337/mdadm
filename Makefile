@@ -211,6 +211,9 @@ mdadm.Os : $(SRCS) $(INCL)
 mdadm.O2 : $(SRCS) $(INCL) mdmon.O2
 	$(CC) -o mdadm.O2 $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -DHAVE_STDINT_H -O2 -D_FORTIFY_SOURCE=2 $(SRCS) $(LDLIBS)
 
+mdadm.synology : $(SRCS) $(INCL)
+	$(CC) -o mdadm.synology $(CFLAGS) -g $(CPPFLAGS) $(LDFLAGS) -DMY_ABC_HERE $(SRCS) $(LDLIBS)
+
 mdmon.O2 : $(MON_SRCS) $(INCL) mdmon.h
 	$(CC) -o mdmon.O2 $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(MON_LDFLAGS) -DHAVE_STDINT_H -O2 -D_FORTIFY_SOURCE=2 $(MON_SRCS) $(LDLIBS)
 

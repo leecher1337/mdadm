@@ -142,6 +142,11 @@ struct dlm_lksb {
 #include	"bitmap.h"
 #include	"msg.h"
 
+/* Support for Synology NAS specials */
+#if !defined(MD_DISK_ERROR) && defined(MY_ABC_HERE)
+#define MD_DISK_ERROR		6
+#endif
+
 #include <endian.h>
 /* Redhat don't like to #include <asm/byteorder.h>, and
  * some time include <linux/byteorder/xxx_endian.h> isn't enough,
@@ -492,6 +497,9 @@ enum special_options {
 	ClusterConfirm,
 	WriteJournal,
 	ConsistencyPolicy,
+#ifdef MD_DISK_ERROR
+	NoDiskErr,
+#endif
 };
 
 enum prefix_standard {
@@ -1388,6 +1396,9 @@ extern int Manage_stop(char *devname, int fd, int quiet,
 extern int Manage_subdevs(char *devname, int fd,
 			  struct mddev_dev *devlist, int verbose, int test,
 			  char *update, int force);
+#ifdef MD_DISK_ERROR
+extern int Manage_updateSB(char *dev, struct supertype *st, char *update, int verbose, int noexcl);
+#endif
 extern int autodetect(void);
 extern int Grow_Add_device(char *devname, int fd, char *newdev);
 extern int Grow_addbitmap(char *devname, int fd,

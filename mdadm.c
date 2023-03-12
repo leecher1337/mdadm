@@ -262,6 +262,9 @@ int main(int argc, char *argv[])
 		case UpdateSubarray:
 		case UdevRules:
 		case KillOpt:
+#ifdef MD_DISK_ERROR
+		case NoDiskErr:
+#endif
 			if (!mode)
 				newmode = MISC;
 			break;
@@ -1032,6 +1035,9 @@ int main(int argc, char *argv[])
 		case O(MISC,'D'):
 		case O(MISC,'E'):
 		case O(MISC,KillOpt):
+#ifdef MD_DISK_ERROR
+		case O(MISC,NoDiskErr):
+#endif
 		case O(MISC,'R'):
 		case O(MISC,'S'):
 		case O(MISC,'X'):
@@ -1987,6 +1993,12 @@ static int misc_list(struct mddev_dev *devlist,
 				rv &= ~4;
 			}
 			continue;
+#ifdef MD_DISK_ERROR
+		case NoDiskErr: /* Clear Synology Disk error flag */
+			rv |= Manage_updateSB(dv->devname, ss, 
+				/*c->update*/ "no-diskerr", /*c->verbose*/ 1, 0);
+			continue;
+#endif
 		case 'Q':
 			rv |= Query(dv->devname);
 			continue;

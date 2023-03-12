@@ -247,6 +247,10 @@ static void examine_super0(struct supertype *st, char *homehost)
 			printf(" sync");
 		if (dp->state & (1 << MD_DISK_REMOVED))
 			printf(" removed");
+#ifdef MD_DISK_ERROR
+		if (dp->state & (1 << MD_DISK_ERROR))
+			printf(" diskerror");
+#endif
 		if (wonly)
 			printf(" write-mostly");
 		if (failfast)
@@ -708,6 +712,12 @@ static int update_super0(struct supertype *st, struct mdinfo *info,
 		sb->reshape_position = info->reshape_progress;
 	else if (strcmp(update, "writemostly")==0)
 		sb->state |= (1<<MD_DISK_WRITEMOSTLY);
+#ifdef MD_DISK_ERROR
+	else if (strcmp(update, "no-diskerr")==0) {
+		sb->this_disk.state &= ~(1<<MD_DISK_ERROR);
+		sb->disks[sb->this_disk.number].state &= ~(1<<MD_DISK_ERROR);
+	}
+#endif
 	else if (strcmp(update, "readwrite")==0)
 		sb->state &= ~(1<<MD_DISK_WRITEMOSTLY);
 	else
@@ -880,6 +890,20 @@ static int store_super0(struct supertype *st, int fd)
 	if (lseek64(fd, offset, 0)< 0LL)
 		return 3;
 
+#ifdef MD_DISK_ERROR
+	/* Hack to rewrite Superblock in original format */
+	if (st->ss && st->minor_version == -9) {
+		mdp_super_t mysuper = *super;
+
+		super0_swap_endian(&mysuper);
+		if (write(fd, &mysuper, sizeof(mysuper)) != sizeof(mysuper))
+			return 4;
+		/* As we only use this to change flags, assume that we don't have
+		 * to rewrite a potential bitmap */
+		fsync(fd);
+		return 0;
+	}
+#endif
 	if (write(fd, super, sizeof(*super)) != sizeof(*super))
 		return 4;
 
